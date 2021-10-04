@@ -6,4 +6,4 @@ title: Sobre nosotras
 
 Somos como mean girls pero con R y fumando mucho. 
 
-No sabemos si la imágen del castor tiene copyright o algo así, no nos denunciéis por favor :(
+No sabemos si la imagen del castor tiene copyright o algo así, no nos denunciéis por favor :(

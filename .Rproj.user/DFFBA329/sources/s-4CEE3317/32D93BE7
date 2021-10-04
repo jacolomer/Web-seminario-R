@@ -3,7 +3,7 @@
     "path": "~/GitHub/Web-seminario-R/content/about.md",
     "project_path": "content/about.md",
     "type": "markdown",
-    "hash": "3255582110",
+    "hash": "1478840147",
     "contents": "",
     "dirty": false,
     "created": 1633335034017.0,
@@ -12,15 +12,15 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "8,61",
+        "cursorPosition": "8,20",
         "scrollLine": "0"
     },
     "folds": "",
-    "lastKnownWriteTime": 1633354626,
+    "lastKnownWriteTime": 1633355369,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1633354626643,
+    "last_content_update": 1633355369399,
     "read_only": false,
     "read_only_alternatives": []
 }
