@@ -21,7 +21,7 @@ menu:
     - name: 3. GitHub
       url: https://github.com/jacolomer
     - name: 4. Contacto
-      url: /contacto/
+      url: /about/
 params:
   MathJaxCDN: //cdnjs.cloudflare.com/ajax/libs
   MathJaxVersion: 2.7.5
