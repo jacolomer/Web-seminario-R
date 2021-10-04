@@ -14,19 +14,17 @@ permalinks:
   post: /:year/:month/:day/:slug/
 menu:
   main:
-    - name: 2. Sobre nosotras
+    - name: Sobre nosotras
       url: /about/
-    - name: 1. Twitter
+    - name: Twitter
       url: https://twitter.com/thatcherfunfact
-    - name: 3. GitHub
+    - name: GitHub
       url: https://github.com/jacolomer
-    - name: 4. Contacto
-      url: /about/
 params:
   MathJaxCDN: //cdnjs.cloudflare.com/ajax/libs
   MathJaxVersion: 2.7.5
   description: Página del seminario de R del departamento de Psicología Social de la Universidad de Granada.
-  favicon: favicon.ico
+  favicon: castor.ico
   highlightjsCDN: //cdnjs.cloudflare.com/ajax/libs
   highlightjsLang:
     - r
@@ -34,9 +32,9 @@ params:
   highlightjsTheme: github
   highlightjsVersion: 9.12.0
   logo:
-    alt: Logo
+    alt: bandera-siete-samurais
     height: 200
-    url: bandera-siete-samurais.jpg
+    url: castor.png
     width: 200
 markup:
   defaultMarkdownHandler: goldmark

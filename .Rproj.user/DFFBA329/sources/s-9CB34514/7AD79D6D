@@ -3,7 +3,7 @@
     "path": "~/GitHub/Web-seminario-R/config.yaml",
     "project_path": "config.yaml",
     "type": "yaml",
-    "hash": "0",
+    "hash": "940778885",
     "contents": "",
     "dirty": false,
     "created": 1633020903171.0,
@@ -12,15 +12,15 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "23,12",
-        "scrollLine": "12"
+        "cursorPosition": "21,39",
+        "scrollLine": "7"
     },
     "folds": "",
-    "lastKnownWriteTime": 1633334688,
+    "lastKnownWriteTime": 1633354670,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1633334688126,
+    "last_content_update": 1633354670743,
     "read_only": false,
     "read_only_alternatives": []
 }

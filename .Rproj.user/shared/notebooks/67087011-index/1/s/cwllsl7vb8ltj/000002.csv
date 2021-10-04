@@ -1,0 +1,6 @@
+"0","library(rmarkdown)"
+"0","library(markdown)"
+"0","library(extrafont)"
+"2","Registering fonts with R
+"
+"0","loadfonts(device = ""win"")"
