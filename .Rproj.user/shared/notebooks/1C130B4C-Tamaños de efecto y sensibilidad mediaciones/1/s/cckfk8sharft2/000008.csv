@@ -1,0 +1,18 @@
+"0","mdt_simple(data = Data_after_exclusions_study_2, CondContr, APPS, ATES)
+"
+"1","Test of mediation (simple mediation)
+"
+"1","==============================================
+"
+"1","
+Variables:
+
+"
+"1","- IV: CondContr 
+"
+"1","- DV: APPS 
+"
+"1","- M: ATES 
+"
+"1","
+Paths:"
