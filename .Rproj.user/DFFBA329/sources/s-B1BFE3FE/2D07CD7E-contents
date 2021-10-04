@@ -82,7 +82,7 @@ library(ggplot2)</code></pre>
 ##  Shapiro-Wilk normality test
 ## 
 ## data:  dd[x, ]
-## W = 0.99163, p-value = 0.9901
+## W = 0.96465, p-value = 0.2407
 ## 
 ## ------------------------------------------------------------ 
 ## data$condition: Order condition
@@ -90,7 +90,7 @@ library(ggplot2)</code></pre>
 ##  Shapiro-Wilk normality test
 ## 
 ## data:  dd[x, ]
-## W = 0.9883, p-value = 0.9477</code></pre>
+## W = 0.99218, p-value = 0.9933</code></pre>
 <p>Para comprobar la homogeneidad de las varianzas:</p>
 <p>F-test:</p>
 <pre class="r"><code>var.test(data$discrimination ~ data$condition) #F-test para comprobar la homogeneidad de las varianzas</code></pre>
@@ -98,18 +98,18 @@ library(ggplot2)</code></pre>
 ##  F test to compare two variances
 ## 
 ## data:  data$discrimination by data$condition
-## F = 1.0245, num df = 39, denom df = 39, p-value = 0.9402
+## F = 1.0857, num df = 39, denom df = 39, p-value = 0.7986
 ## alternative hypothesis: true ratio of variances is not equal to 1
 ## 95 percent confidence interval:
-##  0.5418439 1.9369935
+##  0.5742376 2.0527952
 ## sample estimates:
 ## ratio of variances 
-##           1.024475</code></pre>
+##           1.085722</code></pre>
 <p>Test de Levene. Por defecto utiliza la mediana (más robusto), pero podemos elegir la media con sustituyendo en el argumento center = “mean”</p>
 <pre class="r"><code>leveneTest(y = data$discrimination, group = data$condition, center = &quot;median&quot;) </code></pre>
 <pre><code>## Levene&#39;s Test for Homogeneity of Variance (center = &quot;median&quot;)
 ##       Df F value Pr(&gt;F)
-## group  1  0.0117 0.9143
+## group  1  0.1493 0.7002
 ##       78</code></pre>
 <p>Test de Barlett:</p>
 <pre class="r"><code>bartlett.test(data$discrimination ~ data$condition)</code></pre>
@@ -117,7 +117,7 @@ library(ggplot2)</code></pre>
 ##  Bartlett test of homogeneity of variances
 ## 
 ## data:  data$discrimination by data$condition
-## Bartlett&#39;s K-squared = 0.0056282, df = 1, p-value = 0.9402</code></pre>
+## Bartlett&#39;s K-squared = 0.065098, df = 1, p-value = 0.7986</code></pre>
 <p>También podemos realizar el test de Brown-Forsyth con la función hov() del paquete HH o el Fligner-Killeen test utilizando la misma fórmula y la función fligner.test().</p>
 <p>Si el resultado del test que elijamos es p &lt; .05 no podemos asumir que las varianzas son iguales. Estas pruebas apuntarían a que nuestros grupos las varianzas no son homogéneas y utilizaríamos pruebas distintas para calcular si hay diferencias significativas entre las medias.</p>
 <p>Si utilizamos t.test() para las diferencias de medias el propio programa lleva a cabo una prueba (e.g. Two Sample t-test) u otra (e.g. Welch Two Sample t-test) en función de si hay igualdad de las varianzas, pero podemos forzarlo asumir igualdad de varianzas con el argumento var.equal = TRUE o a asumir lo contrario, con el argumento var.equal = FALSE. Por tanto, está bien tener control sobre lo que hacemos y elegir la mejor prueba, teniendo en cuanta nuestras consideraciones teóricas, para estudiar la homogeneidad de la varianza y, en consecuencia, el mejor test de comparación de medias.</p>
@@ -131,46 +131,46 @@ library(ggplot2)</code></pre>
 ##  Two Sample t-test
 ## 
 ## data:  discrimination by condition
-## t = 3.8652, df = 78, p-value = 0.0002282
+## t = 4.4684, df = 78, p-value = 2.632e-05
 ## alternative hypothesis: true difference in means between group Chaos condition and group Order condition is not equal to 0
 ## 95 percent confidence interval:
-##  0.4386708 1.3705234
+##  0.6629921 1.7284715
 ## sample estimates:
 ## mean in group Chaos condition mean in group Order condition 
-##                      5.359576                      4.454979</code></pre>
+##                      5.467932                      4.272200</code></pre>
 <p>Si no podemos asumir varianzas iguales:</p>
 <pre class="r"><code>t.test(discrimination ~ condition, data = data, alternative = &quot;two.sided&quot;, var.equal = FALSE)</code></pre>
 <pre><code>## 
 ##  Welch Two Sample t-test
 ## 
 ## data:  discrimination by condition
-## t = 3.8652, df = 77.989, p-value = 0.0002283
+## t = 4.4684, df = 77.868, p-value = 2.637e-05
 ## alternative hypothesis: true difference in means between group Chaos condition and group Order condition is not equal to 0
 ## 95 percent confidence interval:
-##  0.4386697 1.3705244
+##  0.6629779 1.7284857
 ## sample estimates:
 ## mean in group Chaos condition mean in group Order condition 
-##                      5.359576                      4.454979</code></pre>
+##                      5.467932                      4.272200</code></pre>
 <p>Medidas repetidas</p>
 <pre class="r"><code>t.test(discrimination ~ condition, data = data, alternative = &quot;two.sided&quot;, paired = TRUE, var.equal = TRUE)</code></pre>
 <pre><code>## 
 ##  Paired t-test
 ## 
 ## data:  discrimination by condition
-## t = 3.8989, df = 39, p-value = 0.0003701
+## t = 4.4683, df = 39, p-value = 6.593e-05
 ## alternative hypothesis: true difference in means is not equal to 0
 ## 95 percent confidence interval:
-##  0.4353048 1.3738893
+##  0.6544559 1.7370077
 ## sample estimates:
 ## mean of the differences 
-##               0.9045971</code></pre>
+##                1.195732</code></pre>
 <p>Si los datos no siguen una distribución normal, como test no paramétrico, podemos utilizar el de Wilcoxon:</p>
 <pre class="r"><code>wilcox.test(data$discrimination ~ data$condition, alternative = &quot;two.sided&quot;, paired = FALSE) #Para medidas repetidas en el argumento paired escribiríamos TRUE</code></pre>
 <pre><code>## 
 ##  Wilcoxon rank sum exact test
 ## 
 ## data:  data$discrimination by data$condition
-## W = 1176, p-value = 0.0002252
+## W = 1222, p-value = 3.008e-05
 ## alternative hypothesis: true location shift is not equal to 0</code></pre>
 </div>
 <div id="la-lógica-subyacente" class="section level1">
@@ -200,7 +200,7 @@ difmed</code></pre>
 ## # A tibble: 1 x 1
 ##    stat
 ##   &lt;dbl&gt;
-## 1 0.905</code></pre>
+## 1  1.20</code></pre>
 <p>Ahora calculamos el intervalo de confianza usando una distribución ‘bootstrapped’ de las diferencias de medias basada en nuestra muestra.</p>
 <pre class="r"><code>medboot &lt;- data %&gt;% 
   specify(discrimination ~ condition) %&gt;% 
@@ -253,13 +253,13 @@ cond_diffs_null %&gt;%
 <pre class="r"><code>cohens_d(data$discrimination, y = data$condition, ci = 0.95, pooled_sd = TRUE) #Con pooled_sd = TRUE indicamos que utilice la desviación típica agrupada de ambas muestras. Asumimos que las varianzas son iguales. </code></pre>
 <pre><code>## Cohen&#39;s d |       95% CI
 ## ------------------------
-## 0.86      | [0.40, 1.32]
+## 1.00      | [0.53, 1.46]
 ## 
 ## - Estimated using pooled SD.</code></pre>
 <pre class="r"><code>hedges_g(data$discrimination, y = data$condition, ci = 0.95, pooled_sd = FALSE)</code></pre>
 <pre><code>## Hedges&#39; g |       95% CI
 ## ------------------------
-## 0.86      | [0.40, 1.31]
+## 0.99      | [0.53, 1.45]
 ## 
 ## - Estimated using un-pooled SD.</code></pre>
 <div id="interpretar-y-transformar-el-tamaño-del-efecto" class="section level2">
