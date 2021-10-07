@@ -16,6 +16,8 @@ menu:
   main:
     - name: Sobre nosotras
       url: /about/
+    - name: Enlaces de interés
+      url: /enlaces/
     - name: GitHub
       url: https://github.com/jacolomer
 params:

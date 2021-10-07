@@ -1,27 +1,27 @@
 {
-    "id": "1377D6DC",
-    "path": "~/GitHub/Web-seminario-R/content/contacto.Rmd",
-    "project_path": "content/contacto.Rmd",
+    "id": "B7F6E02B",
+    "path": "~/GitHub/Web-seminario-R/content/enlaces.Rmd",
+    "project_path": "content/enlaces.Rmd",
     "type": "r_markdown",
-    "hash": "0",
+    "hash": "3759506717",
     "contents": "",
     "dirty": false,
-    "created": 1633021892383.0,
+    "created": 1633602236208.0,
     "source_on_save": false,
-    "relative_order": 2,
+    "relative_order": 5,
     "properties": {
         "tempName": "Untitled1",
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "9,0",
-        "scrollLine": "0"
+        "cursorPosition": "80,0",
+        "scrollLine": "72"
     },
     "folds": "",
-    "lastKnownWriteTime": 1633022504,
+    "lastKnownWriteTime": 1633620304,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1633022504132,
+    "last_content_update": 1633620304405,
     "read_only": false,
     "read_only_alternatives": []
 }

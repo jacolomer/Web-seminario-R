@@ -1,0 +1,85 @@
+---
+title: "Enlaces de interés"
+author: "Joaquín Alcañiz Colomer"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+---
+
+**[Aquí](https://osf.io/c2bxm/)** podéis encontrar los scripts que utilizamos en las primeras sesiones de introducción al programa. 
+
+---
+
+**[Manual extenso de introducción a R](https://bookdown.org/gboccardo/manual-ED-UCH/)**
+
+Manual en castellano con toda la información, detallada y con ejemplos, para utilizar R desde el principio. Únicamente cubre los detalles básicos de R y algo de estadística descriptiva y construcción de gráficos.
+
+---
+
+**[Manual introducción a R (desde la psicología), de Danielle Navarro](https://learningstatisticswithr.com/)**
+
+En la página está disponible el libro, junto con las bases de datos, para descargarlo. También como bookdown [aquí](https://learningstatisticswithr.com/book/). Introducción al tratamiento de datos con R y algunos análisis básicos.
+
+---
+
+**[Manual R for Data Science, de Wickham y Grolemund](https://r4ds.had.co.nz/index.html)**
+
+Manual con algunas de los básicos para trabajar con R, transformar variables, visualizarlas... sobre todo utilizando las herramientas del universo Tidyverse.
+
+---
+
+**[Manual sobre modelos lineares generalizados y modelos multinivel en R](https://bookdown.org/roback/bookdown-BeyondMLR/)**
+
+No sustituye a un libro de estadística sobre el tema, pero es muy aplicado y fácil de entender para trasladarlo a nuestros análisis con R. Incluye todo el código (comandos, paquetes) necesario para los análisis de regresión múltiple, logística... También hay unaintroducción a los análisis multinivel lineares, logísticos y longitudinales. 
+
+---
+
+**[Tutorial para utilizar Lavaan](https://lavaan.ugent.be/tutorial/syntax1.html)**
+
+Lavaan es un paquete de R que utiliza una sintaxis específica. Muy útil a la hora de especificar modelos de regresión, mediaciones, moderaciones, análisis factoriales confirmatorios.... En el manual se explica detalladamente todo lo referente a su funcionamiento, escritura de la sintaxis y posibilidades del paquete. 
+
+---
+
+**[Manual sobre mixed models en R, de Michael Clark](https://m-clark.github.io/mixed-models-with-R/)**
+
+Como el anterior, no sustituye un libro de estadística pero puede servir para familiarizarse con los principios básicos y, sobre todo, aprender a construir los modelos en R (componentes de la varianza, random intercept, random effects...), ya que incluye scripts que podemos adaptar a nuestros datos. 
+
+---
+
+**[Manual de visualización de datos, de Kieran Healy](https://socviz.co/)**
+
+Manual sobre visualización de datos utilizando R y centrado en el paquete ggplot2. Explica todo desde el principio de forma muy sencilla y es muy fácil de conseguir en internet (yo también lo tengo y os lo puedo pasar).
+
+---
+
+**[The R graph gallery](https://www.r-graph-gallery.com/)**
+
+Página web con una gran cantidad de gráficos de todo tipo que podemos utilizar para visualizar nuestros datos. Junto con la explicación del gráfico vienen posibles variaciones de estos, así como todo el código para reproducirlos cambiando las variables que aparezcan por las que nos interese representar de nuestros datos.
+
+---
+
+***[R-Bloggers](https://www.r-bloggers.com/)***
+
+Foro con gran cantidad de mensajes, información, recursos sobre R. Si buscamos en internet cómo hacer algo concreto o algún problema que tengamos en R, casi con toda seguridad alguien lo habrá tenido antes y la búsqueda probablemente nos lleve a alguna página de este foro.
+
+---
+
+**[Página en Github de Easy Stats](https://github.com/easystats)**
+
+Easy Stats es un conjunto de paquetes estadísticos muy útiles para trabajar con nuestros datos (obtener parámetros de nuestro modelo con el paquete “parameters”...). En la página, vemos todos los paquetes que hay y clicando en cada uno de ellos vemos cómo descargarlo y las funciones que tiene.
+
+---
+
+**[Página en Github de Tidyverse](https://github.com/tidyverse)**
+
+Lo mismo que lo anterior, es un conjunto de paquetes estadísticos útiles para hacer funciones básicas (y no tan básicas) con nuestros datos. En la página podemos ver todoslos paquetes del conjunto y qué funciones tiene cada uno. 
+
+---
+
+**[Journal of Statistical Software](https://www.jstatsoft.org/indexUna)**
+
+Revista con montones de artículos sobre paquetes de R, donde incluyen la teoría, ejemplos y códigos utilizados. Los artículos y paquetes son sobre campos y análisis muy diversos y puede ser un poco descorazonador la cantidad de cosas que hay, pero algunos pueden ser útiles para nuestras investigaciones. 
+
