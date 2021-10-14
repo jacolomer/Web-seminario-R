@@ -52,6 +52,7 @@ labels = c("Chaos condition", "Order condition")) #añadimos etiquetas para las 
 
 # 1. Paquetes
 
+
 ```{r paquetes necesarios, message=FALSE, results='hide'}
 
 library(effectsize) #Para calcular tamaños del efecto
@@ -371,7 +372,7 @@ barplt2
 
 
 
-## 7.2. Gráficos de violin 
+## 7.2. Gráficos de violín 
 
 La forma más rápida de hacer un violin plot con bastante información es con ggbetweenstats, del paquete ggstatsplot
 

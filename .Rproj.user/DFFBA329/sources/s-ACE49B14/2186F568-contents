@@ -1,0 +1,565 @@
+---
+title: "Study 3 - Justice principles and attributions for poverty"
+author: "Anonymized for peer-review"
+date: "13/4/2021"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+# 0. Packages
+
+```{r setup}
+
+library(pacman)
+
+p_load(plyr, ggplot2, labelled, dplyr, psych, reghelper, haven, sjPlot,  performance, interplot, sjmisc, parameters, effectsize, interactions, qqplotr, install = TRUE)
+
+Data <- read_sav("C:/Users/User/Desktop/Tesis/Estudios/Estudio 17 - Criterios de justicia y atribuciones de pobreza 2/Base de datos/Study 3 database.sav")
+
+```
+
+# 1. Variables treatment
+
+```{r }
+
+val_labels(Data) <- NULL #To remove labels for an easier manipulation of the data
+
+Data$Sexo <- to_factor(Data$Sexo)
+Data$ID <- 1:nrow(Data) 
+
+table(Data$Lengua_1)
+table(is.na(Data$Lengua_1))
+table(Data$Duration__in_seconds_>= 3600)
+
+#Exclusions#
+
+Data2 <- subset(Data[!(Data$Lengua_1=="2" | is.na(Data$Lengua_1) | Data$Duration__in_seconds_>= 3600),])
+
+sjmisc::frq(Data2$Sexo)
+sjmisc::frq(Data2$Ingresos)
+sjmisc::frq(Data2$Estudios)
+sjmisc::frq(Data2$EstudiosMadre)
+sjmisc::frq(Data2$EstudiosPadre)
+sjmisc::descr(Data2$Edad)
+
+
+#Reverse-scored items#
+
+Data2 <- Data2 %>% 
+  dplyr::mutate(
+    SDO_2r = (8 - SDO_2),
+    SDO_5r = (8 - SDO_5),
+    SDO_7r = (8 - SDO_7),
+    SDO_8r = (8 - SDO_8),
+    SDO_9r = (8 - SDO_9),
+    SDO_10r = (8 - SDO_10),
+    SDO_13r = (8 - SDO_13),
+    SDO_15r = (8 - SDO_15),
+    Q21_1r = (6 - Q21_1),
+    Q21_2r = (6 - Q21_2),
+    Q21_3r = (6 - Q21_3),
+    Q21_7r = (6 - Q21_7),
+    Q21_8r = (6 - Q21_8),
+    Q21_10r = (6 - Q21_10),
+    Q21_16r = (6 - Q21_16),
+    Q21_17r = (6 - Q21_17),
+    Q21_18r = (6 - Q21_18),
+    Q21_20r = (6 - Q21_20))
+
+
+```
+
+#2. Scales and reliability
+
+```{r }
+
+Data2 <- Data2 %>% 
+  dplyr::mutate(
+    SDO = (SDO_1 + SDO_2r + SDO_3 + SDO_4 + SDO_5r + SDO_6 + SDO_7r + SDO_8r + SDO_9r + SDO_10r + SDO_11 + SDO_12 + SDO_13r + SDO_14 + SDO_15r + SDO_16)/16,
+    ATIN = (ATP_1 + ATP_2 + ATP_8 + ATP_9 + ATP_11 + ATP_14 + ATP_19 + ATP_20 + ATP_18)/9,
+    ATES = (ATP_3 + ATP_4 + ATP_6 + ATP_7 + ATP_10 + ATP_12 + ATP_13 + ATP_15 + ATP_16 + ATP_17)/10,
+    EQUA = (APJ_1 + APJ_5 + APJ_9)/3,
+    NEED = (APJ_2 + APJ_6 + APJ_10)/3,
+    EQUIT = (APJ_3 + APJ_7 + APJ_11)/3,
+    ENTIT = (APJ_4 + APJ_8)/2,
+    APPS = (Q21_1r + Q21_2r + Q21_3r + Q21_4 + Q21_5 + Q21_6 + Q21_7r + Q21_8r + Q21_9 + Q21_10r + Q21_11 + Q21_12 + Q21_13 + Q21_14 + Q21_15 + Q21_16r + Q21_17r + Q21_18r + Q21_19 + Q21_20r)/20
+  )
+
+Data2$EstudiosZ <- scale(Data2$Estudios)
+Data2$EstudiosMadreZ <- scale(Data2$EstudiosMadre)
+Data2$EstudiosPadreZ <- scale(Data2$EstudiosPadre)
+Data2$IngresosZ <- scale(Data2$Ingresos)
+
+Data2$OSES <- (Data2$EstudiosZ + Data2$EstudiosMadreZ + Data2$EstudiosPadreZ + Data2$IngresosZ)
+
+
+Data2$OSES <- as.numeric(Data2$OSES)
+
+##Scales reliability##
+#SDO#
+SDOrel <- Data2 %>% 
+  dplyr::select(SDO_1, SDO_2r , SDO_3, SDO_4, SDO_5r, SDO_6, SDO_7r, SDO_8r, SDO_9r, SDO_10r, SDO_11, SDO_12, SDO_13r, SDO_14, SDO_15r, SDO_16) %>%
+  psych::alpha()
+SDOrel #0.86
+  
+#Individualistic attributions#
+
+ATINrel <- Data2 %>% 
+  dplyr::select(ATP_1, ATP_2, ATP_8, ATP_9, ATP_11, ATP_14, ATP_19, ATP_20) %>%
+  psych::alpha()
+
+ATINrel #0.9
+
+#Structural attributions# 
+
+ATESrel <- Data2 %>% 
+  dplyr::select(ATP_3, ATP_4, ATP_6, ATP_7, ATP_10, ATP_12, ATP_13, ATP_15, ATP_16, ATP_17, ATP_18) %>%
+  psych::alpha()
+
+ATESrel #.77
+
+#Attitudes towards social protection policies#
+
+APPSrel <- Data2 %>% 
+  dplyr::select(Q21_1r, Q21_2r, Q21_3r, Q21_4, Q21_5, Q21_6, Q21_7r, Q21_8r, Q21_9, Q21_10r, Q21_11, Q21_12, Q21_13, Q21_14, Q21_15, Q21_16r, Q21_17r, Q21_18r, Q21_19, Q21_20r) %>%
+  psych::alpha()
+
+APPSrel #0.9
+
+#Equality# 
+
+Equalityrel <- Data2 %>% 
+  dplyr::select(APJ_1, APJ_5, APJ_9) %>%
+  item_intercor()
+
+Equalityrel
+
+#Need#
+
+Needrel <- Data2 %>% 
+  dplyr::select(APJ_2, APJ_6, APJ_10) %>%
+  item_intercor()
+
+Needrel
+
+#Equity#
+
+Equityrel <- Data2 %>% 
+  dplyr::select(APJ_3, APJ_7, APJ_11) %>%
+  item_intercor()
+
+Equityrel
+
+#Entitlement#
+
+Entitlementrel <- Data2 %>% 
+  dplyr::select(APJ_4, APJ_8) %>%
+  item_intercor()
+
+Entitlementrel
+
+```
+# 3. Descriptives and correlations##
+
+```{r}
+
+Data2 <- sjlabelled::remove_all_labels(Data2)
+
+
+Descr1 <- Data2 %>% 
+  dplyr::select(SDO, ATIN, ATES,
+         EQUA, NEED, EQUIT, ENTIT, APPS, IDPOL,
+         Edad, OSES, SESSrespuesta) %>% 
+  sjmisc::descr(out = "viewer")
+
+Descr1
+
+Corr1 <- Data2 %>% 
+  dplyr::select(SDO, ATIN, ATES,
+         EQUA, NEED, EQUIT, ENTIT, APPS, IDPOL,
+         Edad, OSES, SESSrespuesta) %>% 
+  sjPlot::tab_corr(triangle = "lower", digits = 2)
+
+Corr1
+
+```
+
+
+
+# 4. Confirmatory hypotheses testing#
+
+```{r}
+
+#Hypotheses 1a-1d#
+
+Reg1 <- lm(APPS ~ OSES + IDPOL + SESSrespuesta + SDO, data = Data2)
+
+summary(Reg1)
+confint(Reg1)
+
+Reg1b <- lm(APPS ~ EQUA + NEED + EQUIT + ENTIT + OSES + IDPOL + SESSrespuesta + SDO, data = Data2)
+
+
+
+summary(Reg1b)
+confint(Reg1b)
+
+
+
+check_model(Reg1b, panel = FALSE)
+check_autocorrelation(Reg1b)
+check_collinearity(Reg1b)
+check_heteroscedasticity(Reg1b)
+check_normality(Reg1b)
+check_outliers(Reg1b)
+
+
+#Hypotheses 2a and 2b#
+
+Reg2 <- lm(APPS ~ OSES + SESSrespuesta + IDPOL + SDO, data = Data2)
+
+summary(Reg2)
+
+ci(Reg2)
+
+Reg2b <- lm(APPS  ~ ATIN + ATES + OSES + SESSrespuesta + IDPOL + SDO, data = Data2)
+
+summary(Reg2b)
+
+ci(Reg2)
+
+check_model(Reg2b)
+check_autocorrelation(Reg2b)
+check_collinearity(Reg2b)
+check_heteroscedasticity(Reg2b)
+check_normality(Reg2b)
+check_outliers(Reg2b)
+
+
+tab_model(Reg1, Reg1b, show.est = TRUE, show.p = TRUE, show.std = TRUE, show.r2 = TRUE)
+
+tab_model(Reg2, Reg2b, show.est = TRUE, show.p = TRUE, show.std = TRUE, show.r2 = TRUE)
+
+```
+
+# 5. Exploratory hypotheses#
+
+```{r}
+
+#Mediations# 
+
+Med1 <- '
+        EQUA   ~ a*ATIN 
+        APPS ~ c*ATIN + b*EQUA 
+        
+        # Indirect effects
+        ind1  := a*b
+        total := c + (a*b)
+        
+        # Effect size
+        ratio1 := (a*b)/total
+        ratio2 := (a*b)/c
+        '
+
+Med1.fit <- sem(Med1, data = Data2, se = "bootstrap", bootstrap = 10000) 
+
+summary(Med1.fit, ci = TRUE, rsquare =TRUE, standardized = TRUE)
+
+
+Med2 <- '
+        NEED   ~ a*ATIN 
+        APPS ~ c*ATIN + b*NEED 
+        
+        # Indirect effects
+        ind1  := a*b
+        total := c + (a*b)
+        
+        # Effect size
+        ratio1 := (a*b)/total
+        ratio2 := (a*b)/c
+        '
+
+Med2.fit <- sem(Med2, data = Data2, se = "bootstrap", bootstrap = 10000)
+
+summary(Med2.fit, ci = TRUE, rsquare =TRUE, standardized = TRUE)
+
+Med3 <- '
+        EQUIT   ~ a*ATIN 
+        APPS ~ c*ATIN + b*EQUIT
+        
+        # Indirect effects
+        ind1  := a*b
+        total := c + (a*b)
+        
+        # Effect size
+        ratio1 := (a*b)/total
+        ratio2 := (a*b)/c
+        '
+
+Med3.fit <- sem(Med3, data = Data2, se = "bootstrap", bootstrap = 10000)
+
+summary(Med3.fit, ci = TRUE, rsquare =TRUE, standardized = TRUE)
+
+Med4 <- '
+        ENTIT   ~ a*ATIN 
+        APPS ~ c*ATIN + b*ENTIT #
+        
+        # Indirect effects
+        ind1  := a*b
+        total := c + (a*b)
+        
+        # Effect size
+        ratio1 := (a*b)/total
+        ratio2 := (a*b)/c
+        '
+
+Med4.fit <- sem(Med4, data = Data2, se = "bootstrap", bootstrap = 10000)
+
+summary(Med4.fit, ci = TRUE, rsquare =TRUE, standardized = TRUE)
+
+
+Med5 <- '
+        EQUA   ~ a*ATES 
+        APPS ~ c*ATES + b*EQUA #
+        
+        # Indirect effects
+        ind1  := a*b
+        total := c + (a*b)
+        
+        # Effect size
+        ratio1 := (a*b)/total
+        ratio2 := (a*b)/c
+        '
+
+Med5.fit <- sem(Med5, data = Data2, se = "bootstrap", bootstrap = 10000)
+
+summary(Med5.fit, ci = TRUE, rsquare =TRUE, standardized = TRUE)
+
+
+Med6 <- '
+        NEED   ~ a*ATES 
+        APPS ~ c*ATES + b*NEED #
+        
+        # Indirect effects
+        ind1  := a*b
+        total := c + (a*b)
+        
+        # Effect size
+        ratio1 := (a*b)/total
+        ratio2 := (a*b)/c
+        '
+
+Med6.fit <- sem(Med6, data = Data2, se = "bootstrap", bootstrap = 10000)
+
+summary(Med6.fit, ci = TRUE, rsquare =TRUE, standardized = TRUE)
+
+Med7 <- '
+        EQUIT   ~ a*ATES 
+        APPS ~ c*ATES + b*EQUIT 
+        
+        # Indirect effects
+        ind1  := a*b
+        total := c + (a*b)
+        
+        # Effect size
+        ratio1 := (a*b)/total
+        ratio2 := (a*b)/c
+        '
+
+Med7.fit <- sem(Med7, data = Data2, se = "bootstrap", bootstrap = 10000)
+
+summary(Med7.fit, ci = TRUE, rsquare =TRUE, standardized = TRUE)
+
+Med8 <- '
+        ENTIT   ~ a*ATES 
+        APPS ~ c*ATES + b*ENTIT #
+        
+        # Indirect effects
+        ind1  := a*b
+        total := c + (a*b)
+        
+        # Effect size
+        ratio1 := (a*b)/total
+        ratio2 := (a*b)/c
+        '
+
+Med8.fit <- sem(Med8, data = Data2, se = "bootstrap", bootstrap = 10000)
+
+summary(Med8.fit, ci = TRUE, rsquare =TRUE)
+
+
+
+#Mediaciones en paralelo
+
+Med9 <- '
+        EQUA    ~ a1*ATIN
+        NEED       ~ a2*ATIN
+        EQUIT    ~ a3*ATIN
+        ENTIT       ~ a4*ATIN
+        APPS  ~ b1*EQUA + b2*NEED + b3*EQUIT + b4*ENTIT + c*ATIN
+        
+        # Efectos indirectos
+        ind1 := a1*b1
+        ind2 := a2*b2
+        ind3 := a3*b3
+        ind4 := a4*b4
+        total_ind := ind1 + ind2 + ind3 + ind4
+        total := c + total_ind
+        '
+
+Med9.fit <- sem(Med9,
+               se = "bootstrap",
+               bootstrap = 10000,
+               data = Data2)
+
+summary(Med9.fit, ci = TRUE, rsquare =TRUE, standardized = FALSE)
+
+
+
+semPaths(Med9.fit, layout = "tree2", "std")
+
+Med10 <- '
+        EQUA    ~ a1*ATES
+        NEED       ~ a2*ATES
+        EQUIT    ~ a3*ATES
+        ENTIT       ~ a4*ATES
+        APPS  ~ b1*EQUA + b2*NEED + b3*EQUIT + b4*ENTIT + c*ATES
+        
+        # Efectos indirectos
+        ind1 := a1*b1
+        ind2 := a2*b2
+        ind3 := a3*b3
+        ind4 := a4*b4
+        total_ind := ind1 + ind2 + ind3 + ind4
+        total := c + total_ind
+        '
+
+Med10.fit <- sem(Med10,
+               se = "bootstrap",
+               bootstrap = 10000,
+               data = Data2)
+
+summary(Med10.fit, ci = TRUE, rsquare =TRUE, standardized = FALSE)
+
+
+
+```
+
+
+#6. Other analyses#
+
+```{r}
+
+Data3 <- subset(Data2[!(Data2$Sexo=="3"),])
+
+t.test(APPS ~ Sexo, data = Data3)
+
+t.test(ATIN ~ Sexo, data=Data3)
+cohens_d(ATIN ~ Sexo, data=Data3)
+t.test(ATES ~ Sexo, data=Data3)
+cohens_d(ATES ~ Sexo, data=Data3)
+t.test(EQUA ~ Sexo, data=Data3)
+cohens_d(EQUA ~ Sexo, data=Data3)
+t.test(NEED ~ Sexo, data=Data3)
+t.test(EQUIT ~ Sexo, data=Data3)
+t.test(ENTIT ~ Sexo, data=Data3)
+cohens_d(ENTIT ~ Sexo, data=Data3)
+
+Data3$Sexo <- set_na(Data3$Sexo, na = 3)
+
+Med11 <- '
+        ATIN   ~ a*Sexo 
+        APPS ~ c*Sexo + b*ATIN 
+        
+        # Indirect effects
+        ind1  := a*b
+        total := c + (a*b)
+        
+        # Effect size
+        ratio1 := (a*b)/total
+        ratio2 := (a*b)/c
+        '
+
+Med11.fit <- sem(Med11,
+               se = "bootstrap",
+               bootstrap = 10000,
+               data = Data3)
+summary(Med11.fit, ci = TRUE, rsquare =TRUE)
+
+Med12 <- '
+        ATES   ~ a*Sexo 
+        APPS ~ c*Sexo + b*ATES 
+        
+        # Indirect effects
+        ind1  := a*b
+        total := c + (a*b)
+        
+        # Effect size
+        ratio1 := (a*b)/total
+        ratio2 := (a*b)/c
+        '
+
+Med12.fit <- sem(Med12,
+               se = "bootstrap",
+               bootstrap = 10000,
+               data = Data3)
+summary(Med12.fit,  ci = TRUE, rsquare =TRUE)
+
+Med13 <- '
+        EQUA   ~ a*Sexo 
+        APPS ~ c*Sexo + b*EQUA 
+        
+        # Indirect effects
+        ind1  := a*b
+        total := c + (a*b)
+        
+        # Effect size
+        ratio1 := (a*b)/total
+        ratio2 := (a*b)/c
+        '
+
+Med13.fit <- sem(Med13,
+               se = "bootstrap",
+               bootstrap = 10000,
+               data = Data3)
+summary(Med13.fit, ci = TRUE, rsquare =TRUE)
+
+Med14 <- '
+        ENTIT   ~ a*Sexo 
+        APPS ~ c*Sexo + b*ENTIT 
+        
+        # Indirect effects
+        ind1  := a*b
+        total := c + (a*b)
+        
+        # Effect size
+        ratio1 := (a*b)/total
+        ratio2 := (a*b)/c
+        '
+
+Med14.fit <- sem(Med14,
+               se = "bootstrap",
+               bootstrap = 10000,
+               data = Data3)
+summary(Med14.fit, ci = TRUE, rsquare =TRUE)
+
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
