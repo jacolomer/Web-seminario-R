@@ -1,6 +1,9 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\themes",
+    "\\themes\\hugo-lithium"
   ],
+  "SelectedNode": "\\themes\\hugo-lithium\\theme.toml",
   "PreviewInSolutionExplorer": false
 }
