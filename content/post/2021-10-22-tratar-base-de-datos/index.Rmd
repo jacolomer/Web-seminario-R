@@ -159,10 +159,120 @@ data <- data %>%
 
 ```
 
+Este mismo paquete nos permite visualizar la cantidad de valores perdidos por variable: 
+
+```{r}
+data %>% 
+  dplyr::select(CLASESUB, ESCIDEOL, NIVELESTENTREV, INGREHOG) %>%
+  naniar::gg_miss_var()
+```
 
 
 
+Una forma menos eficiente sería: 
+
+```{r}
+data$ESCAFELI <- na_if(data$ESCAFELI, '98')
+data$ESCAFELI <- na_if(data$ESCAFELI, '99')
+data$ESCACONFIANZA <- na_if(data$ESCACONFIANZA, '98')
+data$ESCACONFIANZA <- na_if(data$ESCACONFIANZA, '99')
+```
 
 
+## 6. Recodificar variables
 
+```{r}
+data <- data %>% 
+   mutate(item1rec = (10 - item1),
+         #Aqu? podr?amos a?adir todos los items de todas las escalas que quisi?semos
+         #o:
+         item2rec = dplyr::recode(item2, '0' = 10L, '1' = 9L, '2' = 8L,
+                                  '3' = 7L, '4' = 6L, '5' = 5L, '6' = 4L,
+                                  '7' = 3L, '8' = 2L, '9' = 1L, 
+                                  '10' = 0L))
+```
+
+
+## 7. Crear nuevas variables y fiabilidad de escalas
+
+Podemos hacerlo así:
+
+```{r}
+data$escala1a <- (data$item1 + data$item2 + data$item3 + data$item4 +
+                    data$item5 + data$item6)/6
+```
+
+Sin embargo, si hay algún valor perdido el resultado será Na. Así que una mejor forma de hacerlo, que lleva a cabo el cálculo sin tener en cuenta los valores perdidos, sería la siguiente: 
+
+
+```{r}
+data$escala1b <- rowMeans(data[,c("item1", "item2", "item3", 
+                                   "item4", "item5", "item6")], na.rm=TRUE)
+```
+
+
+También podemos calcular la fiabilidad de la escala que acabamos de crear: 
+
+
+```{r}
+data %>% 
+  dplyr::select(item1, item2, item3, item4, item5, item6) %>%
+  alpha(check.keys = TRUE)
+```
+
+## 8. BUscar outliers y tratarlos
+
+Para hacerlo visualmente, aunque puede ser poco informativo en algunos casos: 
+
+```{r}
+boxplot(data$EDAD)
+```
+
+
+Otra forma sería la siguiente, con el paquete 'performance': 
+
+
+```{r}
+
+performance::check_outliers(data$EDAD)
+
+```
+
+Si elegimos esta forma hay que tener en cuenta el método (podemos elegirlo) y ver bien las especificaciones del paquete. 
+
+Para ver los valores concretos de los outliers, utilizar este código: 
+
+```{r}
+data[438, "EDAD"] 
+data[563, "EDAD"]
+data[566, "EDAD"]
+```
+
+Una forma más eficiente para, por ejemplo, ver la edad y el nº identificador de los casos que tienen más de 87 años: 
+
+```{r}
+data %>%
+  filter(EDAD > 87) %>%
+  dplyr::select(EDAD, identificador)
+```
+
+## 9. Aplicar filtros, criterios de exclusión... 
+
+Podemos aplicar filtros con la función filter(), como acabamos de hacer: 
+
+```{r}
+data %>% 
+  filter(EDAD < 87) %>%
+  dplyr::select(ESCAIMPUESTOS, ESCAPOSICION, EDAD, DESIGUALDAD, ESCIDEOL) %>%
+  sjPlot::tab_corr()
+```
+
+O directamente crear una nueva base de datos aplicando nuestros criterios de exclusión: 
+
+```{r}
+data2 <- subset(data[!(data$SEXO=="2" | is.na(data$ESCAIMPUESTOS) 
+                       | data$EDAD>= 87),])
+```
+
+En este caso habríamos eliminado a las mujeres (SEXO = 2), las personas con valores perdidos en la variable ESCAIMPUESTOS y las personas que tengan 87 años y más.  
 

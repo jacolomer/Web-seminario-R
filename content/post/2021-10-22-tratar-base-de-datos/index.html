@@ -23,6 +23,10 @@ leng: es-ES
 <li><a href="#cambiar-la-naturaleza-de-las-variables-para-empezar-a-trabajar-con-ellas">3. Cambiar la naturaleza de las variables para empezar a trabajar con ellas</a></li>
 <li><a href="#renombrar-variables">4. Renombrar variables</a></li>
 <li><a href="#tratamiento-valores-perdidos">5. Tratamiento valores perdidos</a></li>
+<li><a href="#recodificar-variables">6. Recodificar variables</a></li>
+<li><a href="#crear-nuevas-variables-y-fiabilidad-de-escalas">7. Crear nuevas variables y fiabilidad de escalas</a></li>
+<li><a href="#buscar-outliers-y-tratarlos">8. BUscar outliers y tratarlos</a></li>
+<li><a href="#aplicar-filtros-criterios-de-exclusión">9. Aplicar filtros, criterios de exclusión…</a></li>
 </ul>
 </div>
 
@@ -148,4 +152,264 @@ data$NIVELESTENTREV &lt;- as.numeric(data$NIVELESTENTREV)</code></pre>
                                  INTERVENESTADO = c(8, 9),
                                  NIVELESTENTREV = c(16, 98, 99),
                                  INGREHOG = c(98, 99)))</code></pre>
+<p>Este mismo paquete nos permite visualizar la cantidad de valores perdidos por variable:</p>
+<pre class="r"><code>data %&gt;% 
+  dplyr::select(CLASESUB, ESCIDEOL, NIVELESTENTREV, INGREHOG) %&gt;%
+  naniar::gg_miss_var()</code></pre>
+<pre><code>## Warning: It is deprecated to specify `guide = FALSE` to remove a guide. Please
+## use `guide = &quot;none&quot;` instead.</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<p>Una forma menos eficiente sería:</p>
+<pre class="r"><code>data$ESCAFELI &lt;- na_if(data$ESCAFELI, &#39;98&#39;)
+data$ESCAFELI &lt;- na_if(data$ESCAFELI, &#39;99&#39;)
+data$ESCACONFIANZA &lt;- na_if(data$ESCACONFIANZA, &#39;98&#39;)
+data$ESCACONFIANZA &lt;- na_if(data$ESCACONFIANZA, &#39;99&#39;)</code></pre>
+</div>
+<div id="recodificar-variables" class="section level2">
+<h2>6. Recodificar variables</h2>
+<pre class="r"><code>data &lt;- data %&gt;% 
+   mutate(item1rec = (10 - item1),
+         #Aqu? podr?amos a?adir todos los items de todas las escalas que quisi?semos
+         #o:
+         item2rec = dplyr::recode(item2, &#39;0&#39; = 10L, &#39;1&#39; = 9L, &#39;2&#39; = 8L,
+                                  &#39;3&#39; = 7L, &#39;4&#39; = 6L, &#39;5&#39; = 5L, &#39;6&#39; = 4L,
+                                  &#39;7&#39; = 3L, &#39;8&#39; = 2L, &#39;9&#39; = 1L, 
+                                  &#39;10&#39; = 0L))</code></pre>
+</div>
+<div id="crear-nuevas-variables-y-fiabilidad-de-escalas" class="section level2">
+<h2>7. Crear nuevas variables y fiabilidad de escalas</h2>
+<p>Podemos hacerlo así:</p>
+<pre class="r"><code>data$escala1a &lt;- (data$item1 + data$item2 + data$item3 + data$item4 +
+                    data$item5 + data$item6)/6</code></pre>
+<p>Sin embargo, si hay algún valor perdido el resultado será Na. Así que una mejor forma de hacerlo, que lleva a cabo el cálculo sin tener en cuenta los valores perdidos, sería la siguiente:</p>
+<pre class="r"><code>data$escala1b &lt;- rowMeans(data[,c(&quot;item1&quot;, &quot;item2&quot;, &quot;item3&quot;, 
+                                   &quot;item4&quot;, &quot;item5&quot;, &quot;item6&quot;)], na.rm=TRUE)</code></pre>
+<p>También podemos calcular la fiabilidad de la escala que acabamos de crear:</p>
+<pre class="r"><code>data %&gt;% 
+  dplyr::select(item1, item2, item3, item4, item5, item6) %&gt;%
+  alpha(check.keys = TRUE)</code></pre>
+<pre><code>## Number of categories should be increased  in order to count frequencies.</code></pre>
+<pre><code>## 
+## Reliability analysis   
+## Call: alpha(x = ., check.keys = TRUE)
+## 
+##   raw_alpha std.alpha G6(smc) average_r S/N   ase mean sd median_r
+##       0.61      0.67    0.64      0.25   2 0.011  8.9  1     0.23
+## 
+##  lower alpha upper     95% confidence boundaries
+## 0.59 0.61 0.63 
+## 
+##  Reliability if an item is dropped:
+##       raw_alpha std.alpha G6(smc) average_r S/N alpha se  var.r med.r
+## item1      0.60      0.66    0.63      0.28 1.9    0.011 0.0088  0.30
+## item2      0.62      0.65    0.61      0.27 1.8    0.011 0.0078  0.23
+## item3      0.52      0.61    0.58      0.24 1.6    0.013 0.0105  0.22
+## item4      0.53      0.60    0.56      0.23 1.5    0.013 0.0081  0.21
+## item5      0.57      0.61    0.57      0.24 1.6    0.012 0.0067  0.23
+## item6      0.57      0.61    0.57      0.23 1.5    0.012 0.0078  0.21
+## 
+##  Item statistics 
+##          n raw.r std.r r.cor r.drop mean   sd
+## item1 2905  0.50  0.53  0.35   0.26  8.6 1.56
+## item2 2891  0.72  0.56  0.41   0.35  7.8 2.78
+## item3 2869  0.67  0.63  0.52   0.45  9.0 1.82
+## item4 2907  0.63  0.67  0.57   0.44  9.0 1.51
+## item5 2908  0.54  0.63  0.53   0.36  9.2 1.27
+## item6 2918  0.52  0.65  0.55   0.40  9.5 0.88</code></pre>
+</div>
+<div id="buscar-outliers-y-tratarlos" class="section level2">
+<h2>8. BUscar outliers y tratarlos</h2>
+<p>Para hacerlo visualmente, aunque puede ser poco informativo en algunos casos:</p>
+<pre class="r"><code>boxplot(data$EDAD)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
+<p>Otra forma sería la siguiente, con el paquete ‘performance’:</p>
+<pre class="r"><code>performance::check_outliers(data$EDAD)</code></pre>
+<pre><code>## Warning: 21 outliers detected (cases 438, 563, 566, 710, 1119, 1136, 1317, 1337, 1412, 1492, 1705, 2263, 2265, 2321, 2418, 2482, 2541, 2551, 2552, 2673, 2709).</code></pre>
+<p>Si elegimos esta forma hay que tener en cuenta el método (podemos elegirlo) y ver bien las especificaciones del paquete.</p>
+<p>Para ver los valores concretos de los outliers, utilizar este código:</p>
+<pre class="r"><code>data[438, &quot;EDAD&quot;] </code></pre>
+<pre><code>## # A tibble: 1 x 1
+##    EDAD
+##   &lt;dbl&gt;
+## 1    90</code></pre>
+<pre class="r"><code>data[563, &quot;EDAD&quot;]</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##    EDAD
+##   &lt;dbl&gt;
+## 1    88</code></pre>
+<pre class="r"><code>data[566, &quot;EDAD&quot;]</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##    EDAD
+##   &lt;dbl&gt;
+## 1    90</code></pre>
+<p>Una forma más eficiente para, por ejemplo, ver la edad y el nº identificador de los casos que tienen más de 87 años:</p>
+<pre class="r"><code>data %&gt;%
+  filter(EDAD &gt; 87) %&gt;%
+  dplyr::select(EDAD, identificador)</code></pre>
+<pre><code>## # A tibble: 21 x 2
+##     EDAD identificador
+##    &lt;dbl&gt;         &lt;int&gt;
+##  1    90           438
+##  2    88           563
+##  3    90           566
+##  4    88           710
+##  5    89          1119
+##  6    90          1136
+##  7    88          1317
+##  8    94          1337
+##  9    89          1412
+## 10    90          1492
+## # ... with 11 more rows</code></pre>
+</div>
+<div id="aplicar-filtros-criterios-de-exclusión" class="section level2">
+<h2>9. Aplicar filtros, criterios de exclusión…</h2>
+<p>Podemos aplicar filtros con la función filter(), como acabamos de hacer:</p>
+<pre class="r"><code>data %&gt;% 
+  filter(EDAD &lt; 87) %&gt;%
+  dplyr::select(ESCAIMPUESTOS, ESCAPOSICION, EDAD, DESIGUALDAD, ESCIDEOL) %&gt;%
+  sjPlot::tab_corr()</code></pre>
+<pre><code>## Registered S3 methods overwritten by &#39;parameters&#39;:
+##   method                           from      
+##   as.double.parameters_kurtosis    datawizard
+##   as.double.parameters_skewness    datawizard
+##   as.double.parameters_smoothness  datawizard
+##   as.numeric.parameters_kurtosis   datawizard
+##   as.numeric.parameters_skewness   datawizard
+##   as.numeric.parameters_smoothness datawizard
+##   print.parameters_distribution    datawizard
+##   print.parameters_kurtosis        datawizard
+##   print.parameters_skewness        datawizard
+##   summary.parameters_kurtosis      datawizard
+##   summary.parameters_skewness      datawizard</code></pre>
+<table style="border-collapse:collapse; border:none;">
+<tr>
+<th style="font-style:italic; font-weight:normal; border-top:double black; border-bottom:1px solid black; padding:0.2cm;">
+ 
+</th>
+<th style="font-style:italic; font-weight:normal; border-top:double black; border-bottom:1px solid black; padding:0.2cm;">
+ESCAIMPUESTOS
+</th>
+<th style="font-style:italic; font-weight:normal; border-top:double black; border-bottom:1px solid black; padding:0.2cm;">
+ESCAPOSICION
+</th>
+<th style="font-style:italic; font-weight:normal; border-top:double black; border-bottom:1px solid black; padding:0.2cm;">
+EDAD
+</th>
+<th style="font-style:italic; font-weight:normal; border-top:double black; border-bottom:1px solid black; padding:0.2cm;">
+DESIGUALDAD
+</th>
+<th style="font-style:italic; font-weight:normal; border-top:double black; border-bottom:1px solid black; padding:0.2cm;">
+ESCIDEOL
+</th>
+</tr>
+<tr>
+<td style="font-style:italic;">
+ESCAIMPUESTOS
+</td>
+<td style="padding:0.2cm; text-align:center;">
+ 
+</td>
+<td style="padding:0.2cm; text-align:center; color:#999999;">
+-0.034<span style="vertical-align:super;font-size:0.8em;"></span>
+</td>
+<td style="padding:0.2cm; text-align:center; color:#999999;">
+-0.028<span style="vertical-align:super;font-size:0.8em;"></span>
+</td>
+<td style="padding:0.2cm; text-align:center;">
+-0.121<span style="vertical-align:super;font-size:0.8em;">***</span>
+</td>
+<td style="padding:0.2cm; text-align:center;">
+0.333<span style="vertical-align:super;font-size:0.8em;">***</span>
+</td>
+</tr>
+<tr>
+<td style="font-style:italic;">
+ESCAPOSICION
+</td>
+<td style="padding:0.2cm; text-align:center; color:#999999;">
+-0.034<span style="vertical-align:super;font-size:0.8em;"></span>
+</td>
+<td style="padding:0.2cm; text-align:center;">
+ 
+</td>
+<td style="padding:0.2cm; text-align:center;">
+-0.139<span style="vertical-align:super;font-size:0.8em;">***</span>
+</td>
+<td style="padding:0.2cm; text-align:center;">
+0.072<span style="vertical-align:super;font-size:0.8em;">***</span>
+</td>
+<td style="padding:0.2cm; text-align:center;">
+-0.128<span style="vertical-align:super;font-size:0.8em;">***</span>
+</td>
+</tr>
+<tr>
+<td style="font-style:italic;">
+EDAD
+</td>
+<td style="padding:0.2cm; text-align:center; color:#999999;">
+-0.028<span style="vertical-align:super;font-size:0.8em;"></span>
+</td>
+<td style="padding:0.2cm; text-align:center;">
+-0.139<span style="vertical-align:super;font-size:0.8em;">***</span>
+</td>
+<td style="padding:0.2cm; text-align:center;">
+ 
+</td>
+<td style="padding:0.2cm; text-align:center;">
+0.095<span style="vertical-align:super;font-size:0.8em;">***</span>
+</td>
+<td style="padding:0.2cm; text-align:center;">
+0.040<span style="vertical-align:super;font-size:0.8em;">*</span>
+</td>
+</tr>
+<tr>
+<td style="font-style:italic;">
+DESIGUALDAD
+</td>
+<td style="padding:0.2cm; text-align:center;">
+-0.121<span style="vertical-align:super;font-size:0.8em;">***</span>
+</td>
+<td style="padding:0.2cm; text-align:center;">
+0.072<span style="vertical-align:super;font-size:0.8em;">***</span>
+</td>
+<td style="padding:0.2cm; text-align:center;">
+0.095<span style="vertical-align:super;font-size:0.8em;">***</span>
+</td>
+<td style="padding:0.2cm; text-align:center;">
+ 
+</td>
+<td style="padding:0.2cm; text-align:center;">
+-0.171<span style="vertical-align:super;font-size:0.8em;">***</span>
+</td>
+</tr>
+<tr>
+<td style="font-style:italic;">
+ESCIDEOL
+</td>
+<td style="padding:0.2cm; text-align:center;">
+0.333<span style="vertical-align:super;font-size:0.8em;">***</span>
+</td>
+<td style="padding:0.2cm; text-align:center;">
+-0.128<span style="vertical-align:super;font-size:0.8em;">***</span>
+</td>
+<td style="padding:0.2cm; text-align:center;">
+0.040<span style="vertical-align:super;font-size:0.8em;">*</span>
+</td>
+<td style="padding:0.2cm; text-align:center;">
+-0.171<span style="vertical-align:super;font-size:0.8em;">***</span>
+</td>
+<td style="padding:0.2cm; text-align:center;">
+ 
+</td>
+</tr>
+<tr>
+<td colspan="6" style="border-bottom:double black; border-top:1px solid black; font-style:italic; font-size:0.9em; text-align:right;">
+Computed correlation used pearson-method with listwise-deletion.
+</td>
+</tr>
+</table>
+<p>O directamente crear una nueva base de datos aplicando nuestros criterios de exclusión:</p>
+<pre class="r"><code>data2 &lt;- subset(data[!(data$SEXO==&quot;2&quot; | is.na(data$ESCAIMPUESTOS) 
+                       | data$EDAD&gt;= 87),])</code></pre>
+<p>En este caso habríamos eliminado a las mujeres (SEXO = 2), las personas con valores perdidos en la variable ESCAIMPUESTOS y las personas que tengan 87 años y más.</p>
 </div>
