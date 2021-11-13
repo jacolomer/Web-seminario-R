@@ -12,4 +12,4 @@ Je
 
 <img src="index_files/images/meme1.jpeg"
      alt="Perdón"
-     style="float: center; margin-right: 100px;" />
+     style="float: center; margin-right: 100px; height: 980px; width:648px;" />
