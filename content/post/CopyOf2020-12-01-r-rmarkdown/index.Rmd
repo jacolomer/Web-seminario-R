@@ -12,11 +12,20 @@ leng: es-ES
 ---
 
 
-```{r, include=FALSE}
+```{r set options, include=FALSE}
+options(width = 700)
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, out.width = "100%", retina = 1)
+
 library(rmarkdown)
 library(markdown)
 library(extrafont)
-loadfonts(device = "win")
+
+```
+
+
+
+```{r, include=FALSE}
+extrafont::loadfonts(device = "win")
 ```
 
 Para cualquier error que detectéis o sugerencia, podéis escribir a jcolomer@ugr.es 
@@ -168,7 +177,7 @@ wilcox.test(data$discrimination ~ data$condition, alternative = "two.sided", pai
 
 Este paso puede saltarse (hay que descargar varios paquetes y algunos usando 'remotes', hay mucho código, etc.), es simplemente para ilustrar de forma breve la lógica de una comparación de medias (y otros análisis estadísticos que hacemos).
 
-El código de este apartado está copiado groseamente de una entrada del blog de [Andrew Heiss](https://www.andrewheiss.com/blog/2019/01/29/diff-means-half-dozen-ways/#t-test-assuming-equal-variances). La idea fundamental, y que aparece explicada tanto en el blog que cito antes como en este de [Allen Downey](http://allendowney.blogspot.com/2016/06/there-is-still-only-one-test.html), es que para cualquier test estadístico hacemos lo siguiente:
+El código de este apartado está copiado groseramente de una entrada del blog de [Andrew Heiss](https://www.andrewheiss.com/blog/2019/01/29/diff-means-half-dozen-ways/#t-test-assuming-equal-variances). La idea fundamental, y que aparece explicada tanto en el blog que cito antes como en este de [Allen Downey](http://allendowney.blogspot.com/2016/06/there-is-still-only-one-test.html), es que para cualquier test estadístico hacemos lo siguiente:
 
 1) Calcular un estadístico en nuestra muestra. 
 2) Simular una población donde nuestro estadístico es nulo (en este caso la diferencia de medias). 

@@ -14,6 +14,8 @@ permalinks:
   post: /:year/:month/:day/:slug/
 menu:
   main:
+    - name: Entradas
+      url: /post/
     - name: Sobre nosotras
       url: /about/
     - name: Enlaces de interés
