@@ -13,8 +13,11 @@ leng: es-ES
 
 
 ```{r set options, include=FALSE}
+
+library(ragg)
+
 options(width = 700)
-knitr::opts_chunk$set(warning = FALSE, message = FALSE, out.width = "100%", retina = 1)
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, dev = "ragg_png", res = 300)
 
 library(rmarkdown)
 library(markdown)

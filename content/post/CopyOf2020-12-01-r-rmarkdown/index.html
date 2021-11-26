@@ -82,7 +82,7 @@ library(ggplot2)</code></pre>
 ##  Shapiro-Wilk normality test
 ## 
 ## data:  dd[x, ]
-## W = 0.9746, p-value = 0.4967
+## W = 0.98371, p-value = 0.8228
 ## 
 ## --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- 
 ## data$condition: Order condition
@@ -90,7 +90,7 @@ library(ggplot2)</code></pre>
 ##  Shapiro-Wilk normality test
 ## 
 ## data:  dd[x, ]
-## W = 0.97647, p-value = 0.5607</code></pre>
+## W = 0.97414, p-value = 0.4815</code></pre>
 <p>Para comprobar la homogeneidad de las varianzas:</p>
 <p>F-test:</p>
 <pre class="r"><code>var.test(data$discrimination ~ data$condition) #F-test para comprobar la homogeneidad de las varianzas</code></pre>
@@ -98,18 +98,18 @@ library(ggplot2)</code></pre>
 ##  F test to compare two variances
 ## 
 ## data:  data$discrimination by data$condition
-## F = 0.98264, num df = 39, denom df = 39, p-value = 0.9567
+## F = 0.68234, num df = 39, denom df = 39, p-value = 0.2371
 ## alternative hypothesis: true ratio of variances is not equal to 1
 ## 95 percent confidence interval:
-##  0.5197181 1.8578978
+##  0.360889 1.290113
 ## sample estimates:
 ## ratio of variances 
-##          0.9826409</code></pre>
+##          0.6823398</code></pre>
 <p>Test de Levene. Por defecto utiliza la mediana (más robusto), pero podemos elegir la media con sustituyendo en el argumento center = “mean”</p>
 <pre class="r"><code>leveneTest(y = data$discrimination, group = data$condition, center = &quot;median&quot;) </code></pre>
 <pre><code>## Levene&#39;s Test for Homogeneity of Variance (center = &quot;median&quot;)
 ##       Df F value Pr(&gt;F)
-## group  1  0.0178 0.8941
+## group  1  1.0802 0.3019
 ##       78</code></pre>
 <p>Test de Barlett:</p>
 <pre class="r"><code>bartlett.test(data$discrimination ~ data$condition)</code></pre>
@@ -117,7 +117,7 @@ library(ggplot2)</code></pre>
 ##  Bartlett test of homogeneity of variances
 ## 
 ## data:  data$discrimination by data$condition
-## Bartlett&#39;s K-squared = 0.002952, df = 1, p-value = 0.9567</code></pre>
+## Bartlett&#39;s K-squared = 1.3979, df = 1, p-value = 0.2371</code></pre>
 <p>También podemos realizar el test de Brown-Forsyth con la función hov() del paquete HH o el Fligner-Killeen test utilizando la misma fórmula y la función fligner.test().</p>
 <p>Si el resultado del test que elijamos es p &lt; .05 no podemos asumir que las varianzas son iguales. Estas pruebas apuntarían a que nuestros grupos las varianzas no son homogéneas y utilizaríamos pruebas distintas para calcular si hay diferencias significativas entre las medias.</p>
 <p>Si utilizamos t.test() para las diferencias de medias el propio programa lleva a cabo una prueba (e.g. Two Sample t-test) u otra (e.g. Welch Two Sample t-test) en función de si hay igualdad de las varianzas, pero podemos forzarlo asumir igualdad de varianzas con el argumento var.equal = TRUE o a asumir lo contrario, con el argumento var.equal = FALSE. Por tanto, está bien tener control sobre lo que hacemos y elegir la mejor prueba, teniendo en cuanta nuestras consideraciones teóricas, para estudiar la homogeneidad de la varianza y, en consecuencia, el mejor test de comparación de medias.</p>
@@ -131,46 +131,46 @@ library(ggplot2)</code></pre>
 ##  Two Sample t-test
 ## 
 ## data:  discrimination by condition
-## t = 3.0058, df = 78, p-value = 0.003562
+## t = 2.8596, df = 78, p-value = 0.00544
 ## alternative hypothesis: true difference in means between group Chaos condition and group Order condition is not equal to 0
 ## 95 percent confidence interval:
-##  0.2276688 1.1208012
+##  0.2013203 1.1240440
 ## sample estimates:
 ## mean in group Chaos condition mean in group Order condition 
-##                      4.896863                      4.222628</code></pre>
+##                      5.120439                      4.457757</code></pre>
 <p>Si no podemos asumir varianzas iguales:</p>
 <pre class="r"><code>t.test(discrimination ~ condition, data = data, alternative = &quot;two.sided&quot;, var.equal = FALSE)</code></pre>
 <pre><code>## 
 ##  Welch Two Sample t-test
 ## 
 ## data:  discrimination by condition
-## t = 3.0058, df = 77.994, p-value = 0.003562
+## t = 2.8596, df = 75.315, p-value = 0.005485
 ## alternative hypothesis: true difference in means between group Chaos condition and group Order condition is not equal to 0
 ## 95 percent confidence interval:
-##  0.2276682 1.1208017
+##  0.201061 1.124303
 ## sample estimates:
 ## mean in group Chaos condition mean in group Order condition 
-##                      4.896863                      4.222628</code></pre>
+##                      5.120439                      4.457757</code></pre>
 <p>Medidas repetidas</p>
 <pre class="r"><code>t.test(discrimination ~ condition, data = data, alternative = &quot;two.sided&quot;, paired = TRUE, var.equal = TRUE)</code></pre>
 <pre><code>## 
 ##  Paired t-test
 ## 
 ## data:  discrimination by condition
-## t = 3.023, df = 39, p-value = 0.004408
+## t = 3.1202, df = 39, p-value = 0.003394
 ## alternative hypothesis: true difference in means is not equal to 0
 ## 95 percent confidence interval:
-##  0.2231039 1.1253660
+##  0.2330952 1.0922691
 ## sample estimates:
 ## mean of the differences 
-##                0.674235</code></pre>
+##               0.6626821</code></pre>
 <p>Si los datos no siguen una distribución normal, como test no paramétrico, podemos utilizar el de Wilcoxon:</p>
 <pre class="r"><code>wilcox.test(data$discrimination ~ data$condition, alternative = &quot;two.sided&quot;, paired = FALSE) #Para medidas repetidas en el argumento paired escribiríamos TRUE</code></pre>
 <pre><code>## 
 ##  Wilcoxon rank sum exact test
 ## 
 ## data:  data$discrimination by data$condition
-## W = 1107, p-value = 0.002854
+## W = 1070, p-value = 0.008991
 ## alternative hypothesis: true location shift is not equal to 0</code></pre>
 </div>
 <div id="la-lógica-subyacente" class="section level1">
@@ -200,7 +200,7 @@ difmed</code></pre>
 ## # A tibble: 1 x 1
 ##    stat
 ##   &lt;dbl&gt;
-## 1 0.674</code></pre>
+## 1 0.663</code></pre>
 <p>Ahora calculamos el intervalo de confianza usando una distribución ‘bootstrapped’ de las diferencias de medias basada en nuestra muestra.</p>
 <pre class="r"><code>medboot &lt;- data %&gt;% 
   specify(discrimination ~ condition) %&gt;% 
@@ -218,7 +218,7 @@ medboot %&gt;%
        x = &quot;Chaos condition - Order condition&quot;, y = &quot;Count&quot;,
        subtitle = &quot;La línea roja muestra la diferencia observada; la zona sombreada muestra el intervalo de confianza al 95%&quot;) +
   theme_fancy()</code></pre>
-<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-14-1.png" width="100%" /></p>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-14-1.png" width="8000" /></p>
 <p>Ya tenemos calculado nuestro estadístico. Ahora simulamos un mundo donde este sea nulo y añadimos nuestro estadístico a esta población (lo representa la línea roja en el último gráfico de este apatado).</p>
 <pre class="r"><code>#Generamos un &#39;mundo&#39; donde las diferencias son nulas. 
 cond_diffs_null &lt;- data %&gt;% 
@@ -236,7 +236,7 @@ cond_diffs_null %&gt;%
        title = &quot;Distribución nula de las diferencias de medias basada en la simulación&quot;,
        subtitle = &quot;La línea roja muestra la diferencia observada&quot;) +
   theme_fancy()</code></pre>
-<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-15-1.png" width="100%" /></p>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-15-1.png" width="8000" /></p>
 <p>Vemos que parece muy poco probable observar este valor del estadístico en un mundo donde no haya diferencias entre los grupos.</p>
 <pre class="r"><code>cond_diffs_null %&gt;% 
   get_p_value(obs_stat = difmed, direction = &quot;both&quot;) %&gt;% 
@@ -253,13 +253,13 @@ cond_diffs_null %&gt;%
 <pre class="r"><code>cohens_d(data$discrimination, y = data$condition, ci = 0.95, pooled_sd = TRUE) #Con pooled_sd = TRUE indicamos que utilice la desviación típica agrupada de ambas muestras. Asumimos que las varianzas son iguales. </code></pre>
 <pre><code>## Cohen&#39;s d |       95% CI
 ## ------------------------
-## 0.67      | [0.22, 1.12]
+## 0.64      | [0.19, 1.09]
 ## 
 ## - Estimated using pooled SD.</code></pre>
 <pre class="r"><code>hedges_g(data$discrimination, y = data$condition, ci = 0.95, pooled_sd = FALSE)</code></pre>
 <pre><code>## Hedges&#39; g |       95% CI
 ## ------------------------
-## 0.67      | [0.22, 1.11]
+## 0.63      | [0.19, 1.08]
 ## 
 ## - Estimated using un-pooled SD.</code></pre>
 <div id="interpretar-y-transformar-el-tamaño-del-efecto" class="section level2">
@@ -290,7 +290,7 @@ var.equal, plot = TRUE, verbose = TRUE)</p>
 #Con nuestros datos#
 
 TOSTtwo(m1 = 5.218811, m2 = 4.031867, sd1 = 1.088976, sd2 = 1.072184, n1 = 40, n2 = 40, low_eqbound_d = -0.34, high_eqbound_d = 0.34, alpha = 0.05, var.equal = TRUE, plot = TRUE, verbose = TRUE)</code></pre>
-<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-20-1.png" width="100%" /></p>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
 <pre><code>## TOST results:
 ## t-value lower bound: 6.43    p-value lower bound: 0.000000005
 ## t-value upper bound: 3.39    p-value upper bound: 0.999
@@ -355,13 +355,13 @@ barplt &lt;- ggplot(infograph) +
 barplt2 &lt;- barplt + theme_pubr(base_size = 10, border = FALSE, margin = TRUE, legend = &quot;none&quot;)
 
 barplt2</code></pre>
-<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-21-1.png" width="100%" /></p>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-21-1.png" width="672" /></p>
 </div>
 <div id="gráficos-de-violín" class="section level2">
 <h2>7.2. Gráficos de violín</h2>
 <p>La forma más rápida de hacer un violin plot con bastante información es con ggbetweenstats, del paquete ggstatsplot</p>
 <pre class="r"><code>ggbetweenstats(data = data, x = condition, y = discrimination)</code></pre>
-<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-22-1.png" width="100%" /></p>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
 <pre class="r"><code>#Tenemos muchas opciones para modificarlo
 
 ggbetweenstats(
@@ -407,7 +407,7 @@ ggbetweenstats(
   ggplot.component = NULL,
   output = &quot;plot&quot;) + xlab(&quot;Experimental Condition&quot;) + 
     ylab(&quot;Discrimination scores&quot;)</code></pre>
-<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-22-2.png" width="100%" /></p>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-22-2.png" width="672" /></p>
 <p>Otra forma de hacer gráficos de violín:</p>
 <pre class="r"><code>library(viridis)
 library(hrbrthemes)
@@ -430,7 +430,7 @@ ggplot(data, aes(x=condition, y= discrimination, fill=condition)) +
     ylab(&quot;Discrimination scores&quot;) + 
   scale_fill_manual(values = c(&quot;#56B4E9&quot;, &quot;#D55E00&quot;)) +
   theme_pubr(base_size = 11, border = FALSE, margin = TRUE, legend = &quot;none&quot;)</code></pre>
-<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-23-1.png" width="100%" /></p>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-23-1.png" width="672" /></p>
 <p>Otra posibilidad más:</p>
 <pre class="r"><code>library(gghalves)
 
@@ -463,7 +463,7 @@ ggplot(data, aes(x = condition, y = discrimination, fill = condition)) +
     ggtitle(&quot;Discrimination scores in both conditions&quot;) +
     xlab(&quot;&quot;) + 
     ylab(&quot;Discrimination scores&quot;) + scale_fill_brewer(palette=&quot;Dark2&quot;) + scale_fill_manual(values = c(&quot;#56B4E9&quot;, &quot;#D55E00&quot;)) </code></pre>
-<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-24-1.png" width="100%" /></p>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-24-1.png" width="672" /></p>
 <p>Ahora incluyendo si las diferencias son significativas con el paquete ‘ggsignif’</p>
 <pre class="r"><code>library(ggsignif)
 
@@ -500,7 +500,7 @@ ggplot(data, aes(x = condition, y = discrimination, fill = condition)) +
     ggtitle(&quot;Discrimination scores in both conditions&quot;) +
     xlab(&quot;&quot;) + 
     ylab(&quot;Discrimination scores&quot;) + scale_fill_brewer(palette=&quot;Dark2&quot;) + scale_fill_manual(values = c(&quot;#56B4E9&quot;, &quot;#D55E00&quot;)) </code></pre>
-<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-25-1.png" width="100%" /></p>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-25-1.png" width="672" /></p>
 <p>También podríamos incluir el resultado directamente con el paquete ‘statsExpressions’:</p>
 <pre class="r"><code>library(statsExpressions)
 
@@ -535,7 +535,7 @@ ggplot(data, aes(x = condition, y = discrimination, fill = condition)) +
     ggtitle(&quot;Discrimination scores in both conditions&quot;, subtitle = expresion$expression[[1]]) +
     xlab(&quot;&quot;) + 
     ylab(&quot;Discrimination scores&quot;) + scale_fill_brewer(palette=&quot;Dark2&quot;) + scale_fill_manual(values = c(&quot;#56B4E9&quot;, &quot;#D55E00&quot;)) </code></pre>
-<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-26-1.png" width="100%" /></p>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-26-1.png" width="672" /></p>
 </div>
 <div id="otros-gráficos" class="section level2">
 <h2>7.3. Otros gráficos</h2>
@@ -550,11 +550,11 @@ two.group &lt;-
 two.group.meandiff &lt;- mean_diff(two.group)
 
 plot(two.group.meandiff, rawplot.ylabel = &quot;Discrimation scores&quot;, rawplot.markersize = 3)</code></pre>
-<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-27-1.png" width="100%" /></p>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-27-1.png" width="672" /></p>
 <pre class="r"><code>two.group.effsize &lt;- cohens_d(two.group)
 
 plot(two.group.effsize, rawplot.ylabel = &quot;Discrimation scores&quot;, rawplot.markersize = 1.5)</code></pre>
-<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-27-2.png" width="100%" /></p>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-27-2.png" width="672" /></p>
 </div>
 <div id="guardar-los-gráficos" class="section level2">
 <h2>7.4. Guardar los gráficos</h2>
